@@ -2,10 +2,8 @@ package com.ttc.app.dto;
 
 import jakarta.validation.constraints.NotNull;
 
-public record AddTaskDefinitionRequest(
-    
+public record EditTaskDefinitionRequest(
     @NotNull
     String category,
-    
-    String description) {
-}
+    String description
+) {}
