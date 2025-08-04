@@ -1,8 +1,11 @@
-package com.ttc.app.dto;
+package com.ttc.app.dto.taskDefinition;
 
 import jakarta.validation.constraints.NotNull;
 
-public record EditTaskDefinitionRequest(
+public record TaskDefinition
+(
+    @NotNull
+    Long id,
     @NotNull
     String category,
     String description

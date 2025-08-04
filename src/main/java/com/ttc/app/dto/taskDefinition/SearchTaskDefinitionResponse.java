@@ -1,4 +1,4 @@
-package com.ttc.app.dto;
+package com.ttc.app.dto.taskDefinition;
 
 import java.util.List;
 
