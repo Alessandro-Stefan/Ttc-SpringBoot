@@ -54,6 +54,19 @@
 			<artifactId>mapstruct</artifactId>
 			<version>${mapstruct.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+    		<artifactId>postgresql</artifactId>
+			<version>42.7.3</version> <!-- versione compatibile con PostgreSQL 16 -->
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.validator</groupId> 
+			<artifactId>hibernate-validator</artifactId> 
+			<version>8.0.1.Final</version>
+		</dependency>
 	</dependencies>
 
 	<build>
