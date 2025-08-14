@@ -1,7 +1,5 @@
 package com.ttc.app.entity;
 
-import org.hibernate.mapping.Join;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,9 +8,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+@Table(name = "tasks")
 @Entity
-public class Task {
+public class TaskEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class Task {
     private String description;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "definition_id", nullable = false)
-    private TaskDefinition taskDefinition;
+    private TaskDefinitionEntity taskDefinition;
     @Column(name = "priority", nullable = false)
     private Integer priority;
 
@@ -45,12 +45,16 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
-    public TaskDefinition getTaskDefinition() {
+    
+    //TODO: C'è un modo più conveniente per get e set?
+    public TaskDefinitionEntity getTaskDefinition() {
         return taskDefinition;
     }
-    public void setTaskDefinition(TaskDefinition taskDefinition) {
+    public void setTaskDefinition(TaskDefinitionEntity taskDefinition) {
         this.taskDefinition = taskDefinition;
     }
+    
+    
     public Integer getPriority() {
         return priority;
     }
