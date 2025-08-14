@@ -45,8 +45,6 @@ public class TaskEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    //TODO: C'è un modo più conveniente per get e set?
     public TaskDefinitionEntity getTaskDefinition() {
         return taskDefinition;
     }
