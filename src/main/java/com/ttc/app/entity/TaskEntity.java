@@ -12,7 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Task {
+public class TaskEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class Task {
     private String description;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "definition_id", nullable = false)
-    private TaskDefinition taskDefinition;
+    private TaskDefinitionEntity taskDefinition;
     @Column(name = "priority", nullable = false)
     private Integer priority;
 
@@ -45,10 +45,10 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
-    public TaskDefinition getTaskDefinition() {
+    public TaskDefinitionEntity getTaskDefinition() {
         return taskDefinition;
     }
-    public void setTaskDefinition(TaskDefinition taskDefinition) {
+    public void setTaskDefinition(TaskDefinitionEntity taskDefinition) {
         this.taskDefinition = taskDefinition;
     }
     public Integer getPriority() {

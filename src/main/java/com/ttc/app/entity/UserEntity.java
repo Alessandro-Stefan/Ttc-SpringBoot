@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
@@ -47,6 +47,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+    
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -59,11 +60,10 @@ public class User {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+    
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
                 + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
     }
-
-    
 }
