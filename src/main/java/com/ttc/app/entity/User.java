@@ -1,4 +1,4 @@
-package com.ttc.app.model;
+package com.ttc.app.entity;
 
 import java.sql.Date;
 

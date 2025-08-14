@@ -1,4 +1,4 @@
-package com.ttc.app.model;
+package com.ttc.app.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,6 +44,6 @@ public class TaskDefinition {
     public String toString() {
         return "TaskDefinition [id=" + id + ", category=" + category + ", description=" + description + "]";
     }
-    
+
     
 }
