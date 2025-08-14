@@ -6,7 +6,5 @@ public record UserDto(
     Long id,
     String username,
     String email,
-    String password,
-    Date createdAt,
-    Date updatedAt
+    String password
 ) {}
