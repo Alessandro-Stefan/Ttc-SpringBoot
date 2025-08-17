@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record SearchTaskResponse(
     @NotNull
-    List<Task> data
+    List<TaskDto> data
 ) {}
