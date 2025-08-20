@@ -38,4 +38,24 @@ public class UserServiceImpl implements UserServiceInterface {
         userRepo.save(userEntity);
         return new AddUserResponse(userEntity.getId());
     }
+
+    @Override
+    public void editUser (Long id, EditUserRequest request) {
+        UserEntity userEntity = userRepo.getUserById(id);
+        if (userEntity == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id);
+        }
+        userEntity.setUsername(request.username());
+        userEntity.setEmail(request.email());
+        userRepo.save(userEntity);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        UserEntity userEntity = userRepo.getUserById(id);
+        if (userEntity == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id);
+        }
+        userRepo.delete(userEntity);
+    }   
 }
