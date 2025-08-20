@@ -1,7 +1,9 @@
 package com.ttc.app.dto.user;
 
+import jakarta.validation.constraints.NotNull;
+
 public record AddUserRequest(
-    String username,
-    String email,
-    String password
+    @NotNull String username,
+    @NotNull String email,
+    @NotNull String password
 ) {}
