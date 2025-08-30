@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ttc.app.dto.task.AddTaskRequest;
 import com.ttc.app.dto.task.AddTaskResponse;
+import com.ttc.app.dto.task.EditTaskRequest;
 import com.ttc.app.dto.task.GetTaskResponse;
 import com.ttc.app.dto.task.TaskDto;
 import com.ttc.app.entity.TaskEntity;
@@ -30,9 +31,9 @@ public class TaskServiceImpl implements TaskServiceInterface {
     @Override
     public GetTaskResponse getTask(Long id) {
         TaskEntity entity = taskRepo.getTaskById(id);
-        if (entity == null)
+        if (entity == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
-        
+        }    
         TaskDto data = taskMapper.toDto(entity);
         return new GetTaskResponse(data);
     }
@@ -45,5 +46,26 @@ public class TaskServiceImpl implements TaskServiceInterface {
         TaskEntity entity = taskMapper.toEntity(request);
         taskRepo.save(entity);
         return new AddTaskResponse(entity.getId());
+    }
+
+    @Override
+    public void editTask(Long id, EditTaskRequest request) {
+        TaskEntity entity = taskRepo.getTaskById(id);
+        if (entity == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
+
+        entity.setDescription(request.description() == null ? " " : request.description());
+        //TODO: Da inserire una classe che contiene le constanti di varie cose, tra cui la defaultPriority
+        entity.setPriority(request.priority() == null ? 0 : request.priority());
+        taskRepo.save(entity);
+    }
+
+    @Override
+    public void deleteTask(Long id) {
+        TaskEntity entity = taskRepo.getTaskById(id);
+        if (entity == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
+        
+        taskRepo.delete(entity);
     }
 }
