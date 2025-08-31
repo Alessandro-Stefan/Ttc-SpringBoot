@@ -42,7 +42,7 @@ public class TaskRest {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateTask(@PathVariable Long id, @Valid @RequestBody EditTaskRequest request) {
+    public ResponseEntity<Void> editTask(@PathVariable Long id, @Valid @RequestBody EditTaskRequest request) {
         taskService.editTask(id, request);
         return ResponseEntity.noContent().build();
     }
