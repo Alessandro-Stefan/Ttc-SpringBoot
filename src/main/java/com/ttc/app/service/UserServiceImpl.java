@@ -23,9 +23,8 @@ public class UserServiceImpl implements UserServiceInterface {
     @Override
     public GetUserResponse getUserById(Long id) {
         UserEntity userEntity = userRepo.getUserById(id);
-        if (userEntity == null) {
+        if (userEntity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id);
-        }
 
         UserDto userDto = userMapper.toDto(userEntity);
         GetUserResponse response = new GetUserResponse(userDto);
@@ -42,9 +41,9 @@ public class UserServiceImpl implements UserServiceInterface {
     @Override
     public void editUser (Long id, EditUserRequest request) {
         UserEntity userEntity = userRepo.getUserById(id);
-        if (userEntity == null) {
+        if (userEntity == null) 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id);
-        }
+
         userEntity.setUsername(request.username());
         userEntity.setEmail(request.email());
         userRepo.save(userEntity);
@@ -53,9 +52,9 @@ public class UserServiceImpl implements UserServiceInterface {
     @Override
     public void deleteUser(Long id) {
         UserEntity userEntity = userRepo.getUserById(id);
-        if (userEntity == null) {
+        if (userEntity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id);
-        }
+
         userRepo.delete(userEntity);
     }   
 }
