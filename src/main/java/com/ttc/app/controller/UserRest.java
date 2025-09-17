@@ -48,4 +48,6 @@ public class UserRest {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+    
+    //TODO: To implement the registration and login methods
 }
