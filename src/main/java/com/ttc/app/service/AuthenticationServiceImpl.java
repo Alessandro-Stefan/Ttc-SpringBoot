@@ -1,11 +1,17 @@
 package com.ttc.app.service;
 
+import com.ttc.app.dto.user.LoginRequest;
+import com.ttc.app.dto.user.LoginResponse;
 import com.ttc.app.security.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,9 +27,22 @@ import java.util.function.Function;
 public class AuthenticationServiceImpl implements AuthenticationService, UserDetailsService {
 
     private final SecurityProperties securityProps;
+    private final AuthenticationManager authManager;
 
-    public  AuthenticationServiceImpl(SecurityProperties securityProps) {
+    public  AuthenticationServiceImpl(SecurityProperties securityProps, AuthenticationManager authManager) {
         this.securityProps = securityProps;
+        this.authManager = authManager;
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+        Authentication auth = authManager.authenticate(
+            new UsernamePasswordAuthenticationToken(request.username(),request.password()));
+
+        if (!auth.isAuthenticated())
+            throw new UsernameNotFoundException("Invalid login credentials");
+
+        return new LoginResponse(generateToken(request.username()));
     }
 
     @Override

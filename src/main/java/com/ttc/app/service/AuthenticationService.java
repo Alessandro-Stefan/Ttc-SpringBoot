@@ -3,6 +3,9 @@ package com.ttc.app.service;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.ttc.app.dto.user.LoginRequest;
+import com.ttc.app.dto.user.LoginResponse;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
@@ -18,4 +21,5 @@ public interface AuthenticationService {
     Claims extractAllClaims(String token);
     Boolean isTokenExpired(String token);
     Boolean validateToken(String token, UserDetails userDetails);
+    LoginResponse login(LoginRequest request);
 }

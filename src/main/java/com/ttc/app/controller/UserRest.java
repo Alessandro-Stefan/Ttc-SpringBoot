@@ -3,12 +3,16 @@ package com.ttc.app.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ttc.app.dto.user.*;
+import com.ttc.app.service.AuthenticationServiceImpl;
 import com.ttc.app.service.UserServiceInterface;
 
 import jakarta.validation.Valid;
 
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +25,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UserRest {
 
     private final UserServiceInterface userService;
-    public UserRest(UserServiceInterface userService) {
+    private final AuthenticationManager authenticationManager;
+    private final AuthenticationServiceImpl authService;
+
+    public UserRest(UserServiceInterface userService, AuthenticationManager authenticationManager, AuthenticationServiceImpl authService) {
+        this.authenticationManager = authenticationManager;
         this.userService = userService;
+        this.authService = authService;
     }
 
     @GetMapping("/{id}")
@@ -47,6 +56,20 @@ public class UserRest {
     public ResponseEntity deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        org.springframework.security.core.Authentication auth = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password())
+        );
+
+        if (!auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            
+        }
+
+        return ResponseEntity.ok(authService.generateToken(loginRequest.username()));
     }
     
     //TODO: To implement the registration and login methods
