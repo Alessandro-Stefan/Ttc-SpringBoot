@@ -16,6 +16,8 @@ public class SecurityProperties {
     private List<EndpointRule> userEndpoints;
     @Value("${jwt.secret}")
     private String jwtKey;
+    @Value("${jwt.expiration")
+    private Long jwtExpiration;
 
     public List<EndpointRule> getUserEndpoints() {
         return userEndpoints;
@@ -37,5 +39,8 @@ public class SecurityProperties {
     }
     public String getJwtKey() {
         return jwtKey;
+    }
+    public Long getJwtExpiration() {
+        return jwtExpiration;
     }
 }

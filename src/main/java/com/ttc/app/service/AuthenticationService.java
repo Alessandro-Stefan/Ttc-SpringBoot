@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 public interface AuthenticationService {
     String generateToken(String email);
-    String createToken(Map<String,Object> claims, String email);
+    String createToken(Map<String,Object> claims, String email, long expiration);
     Key getSignKey();
     String extractUsername(String token);
     Date extractExpiration(String token);

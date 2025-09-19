@@ -1,6 +1,7 @@
 package com.ttc.app.service;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,12 +13,14 @@ import com.ttc.app.repository.UserRepo;
 @Service
 public class UserServiceImpl implements UserServiceInterface {
 
-    UserRepo userRepo;
-    UserMapper userMapper;
+    private final UserRepo userRepo;
+    private final UserMapper userMapper;
+    private final PasswordEncoder encoder;
 
-    public UserServiceImpl(UserRepo userRepo, UserMapper userMapper) {
+    public UserServiceImpl(UserRepo userRepo, UserMapper userMapper, PasswordEncoder encoder) {
         this.userRepo = userRepo;
         this.userMapper = userMapper;
+        this.encoder = encoder;
     }
 
     @Override
@@ -33,7 +36,12 @@ public class UserServiceImpl implements UserServiceInterface {
 
     @Override
     public AddUserResponse addUser(AddUserRequest request) {
-        UserEntity userEntity = userMapper.toEntity(request);
+        //TODO: Da fixare l'utilizzo della doppia richiesta
+        String encodedPsw = encoder.encode(request.password());
+        AddUserRequest req = new AddUserRequest(request.username(), encodedPsw, request.email());
+
+        UserEntity userEntity = userMapper.toEntity(req);
+
         userRepo.save(userEntity);
         return new AddUserResponse(userEntity.getId());
     }

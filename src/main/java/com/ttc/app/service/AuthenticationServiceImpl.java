@@ -2,6 +2,8 @@ package com.ttc.app.service;
 
 import com.ttc.app.dto.user.LoginRequest;
 import com.ttc.app.dto.user.LoginResponse;
+import com.ttc.app.entity.UserEntity;
+import com.ttc.app.repository.UserRepo;
 import com.ttc.app.security.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,6 +14,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,12 +27,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService, UserDetailsService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final SecurityProperties securityProps;
     private final AuthenticationManager authManager;
 
-    public  AuthenticationServiceImpl(SecurityProperties securityProps, AuthenticationManager authManager) {
+    public  AuthenticationServiceImpl(SecurityProperties securityProps, AuthenticationManager authManager, UserRepo userRepo) {
         this.securityProps = securityProps;
         this.authManager = authManager;
     }
@@ -48,16 +51,16 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
     @Override
     public String generateToken(String email) {
         Map<String,Object> claims = new HashMap<>();
-        return createToken(claims, email);
+        return createToken(claims, email, securityProps.getJwtExpiration());
     }
 
     @Override
-    public String createToken(Map<String, Object> claims, String email) {
+    public String createToken(Map<String, Object> claims, String email, long expiration) {
         return Jwts.builder()
                     .setClaims(claims)
                     .setSubject(email)
                     .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                    .setExpiration(new Date(System.currentTimeMillis() + expiration))
                     .signWith(getSignKey(), SignatureAlgorithm.HS256)
                     .compact();
     }
@@ -102,10 +105,5 @@ public class AuthenticationServiceImpl implements AuthenticationService, UserDet
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
     }
 }
