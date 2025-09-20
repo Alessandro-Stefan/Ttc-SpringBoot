@@ -1,6 +1,9 @@
 package com.ttc.app.service;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,7 +14,7 @@ import com.ttc.app.mapper.UserMapper;
 import com.ttc.app.repository.UserRepo;
 
 @Service
-public class UserServiceImpl implements UserServiceInterface {
+public class UserServiceImpl implements UserServiceInterface, UserDetailsService {
 
     private final UserRepo userRepo;
     private final UserMapper userMapper;
@@ -64,5 +67,14 @@ public class UserServiceImpl implements UserServiceInterface {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id);
 
         userRepo.delete(userEntity);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepo.findByEmail(username);
+        if (userEntity == null)
+            throw new UsernameNotFoundException("User not found with email: " + username);
+        
+        return userEntity;
     }   
 }

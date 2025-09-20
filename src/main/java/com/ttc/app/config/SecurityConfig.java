@@ -1,8 +1,12 @@
 package com.ttc.app.config;
 
 import com.ttc.app.security.properties.SecurityProperties;
+import com.ttc.app.service.UserServiceImpl;
+import com.ttc.app.util.JwtUtil;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,20 +26,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    //TODO: To implement the methods
-    private final JwtAuthFilter jwtAuthFilter;
-    //TODO: To implement the methods
+    
+    //TODO: Da fixare il problema del ciclo di dipendenze ? ? ?
     private final UserDetailsService userDetailsService;
     private final SecurityProperties securityProps;
+    private final JwtUtil jwtUtil;
+    private final UserServiceImpl userService;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService, SecurityProperties securityProps) {
-        this.jwtAuthFilter = jwtAuthFilter;
+    public SecurityConfig(UserDetailsService userDetailsService, SecurityProperties securityProps, JwtUtil jwtUtil, UserServiceImpl userService) {
         this.userDetailsService = userDetailsService;
         this.securityProps = securityProps;
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception {
+        JwtAuthFilter jwtFilter = new JwtAuthFilter(jwtUtil, userService);
+
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> {
@@ -52,7 +60,7 @@ public class SecurityConfig {
                 });})
             .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
