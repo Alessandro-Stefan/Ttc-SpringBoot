@@ -6,7 +6,6 @@ import com.ttc.app.util.JwtUtil;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -15,7 +14,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,14 +25,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     
-    //TODO: Da fixare il problema del ciclo di dipendenze ? ? ?
-    private final UserDetailsService userDetailsService;
     private final SecurityProperties securityProps;
     private final JwtUtil jwtUtil;
     private final UserServiceImpl userService;
 
-    public SecurityConfig(UserDetailsService userDetailsService, SecurityProperties securityProps, JwtUtil jwtUtil, UserServiceImpl userService) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(SecurityProperties securityProps, JwtUtil jwtUtil, UserServiceImpl userService) {
         this.securityProps = securityProps;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
@@ -42,22 +37,26 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)  throws Exception {
-        JwtAuthFilter jwtFilter = new JwtAuthFilter(jwtUtil, userService);
+        JwtAuthFilter jwtFilter = new JwtAuthFilter(jwtUtil, userService, securityProps);
 
         http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> {
+            .authorizeHttpRequests(   
+            auth -> {
                 securityProps.getPublicEndpoints().forEach(endpoint -> {
                     auth.requestMatchers(HttpMethod.valueOf(endpoint.getMethod()), endpoint.getPath()).permitAll();
                 });
-
+                
                 securityProps.getAdminEndpoints().forEach(endpoint -> {
-                    auth.requestMatchers(HttpMethod.valueOf(endpoint.getMethod()), endpoint.getPath()).hasRole("ADMIN");
+                    auth.requestMatchers(endpoint.getPath()).hasRole("ADMIN");
                 });
 
                 securityProps.getUserEndpoints().forEach(endpoint -> {
-                    auth.requestMatchers(HttpMethod.valueOf(endpoint.getMethod()), endpoint.getPath()).hasRole("USER");
-                });})
+                    auth.requestMatchers(endpoint.getPath()).hasRole("USER");
+                });
+
+                auth.anyRequest().authenticated();
+            })
             .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -72,7 +71,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(userService);
         provider.setPasswordEncoder(passwordEncoder());
 
         return provider;

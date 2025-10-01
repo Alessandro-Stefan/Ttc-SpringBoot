@@ -6,10 +6,15 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Table(name = "users")
@@ -28,6 +33,10 @@ public class UserEntity implements UserDetails {
     private Date createdAt;
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    @ColumnDefault("USER")
+    private Role role;
 
     public Long getId() {
         return id;
@@ -40,26 +49,26 @@ public class UserEntity implements UserDetails {
     }
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
     public void setUsername(String username) {
         this.username = username;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     public String getPassword() {
@@ -74,7 +83,6 @@ public class UserEntity implements UserDetails {
     public void setEmail(String email) {
         this.email = email;
     }
-    
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -86,6 +94,12 @@ public class UserEntity implements UserDetails {
     }
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

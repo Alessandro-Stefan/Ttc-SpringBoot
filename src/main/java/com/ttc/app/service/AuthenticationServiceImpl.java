@@ -4,11 +4,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.ttc.app.dto.user.LoginRequest;
 import com.ttc.app.dto.user.LoginResponse;
 import com.ttc.app.util.JwtUtil;
 
+@Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtUtil jwtUtil;
@@ -22,7 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public LoginResponse login(LoginRequest request) {
         Authentication auth = authManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.username(),request.password()));
+            new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
         if (!auth.isAuthenticated())
             throw new UsernameNotFoundException("Invalid login credentials");

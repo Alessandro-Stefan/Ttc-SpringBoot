@@ -2,6 +2,9 @@ package com.ttc.app.security.beans;
 
 import java.util.List;
 
+import org.springframework.context.annotation.PropertySource;
+
+@PropertySource("classpath:application.yaml")
 public class EndpointRule {
     private String path;
     private String method;

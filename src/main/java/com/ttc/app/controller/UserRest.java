@@ -36,12 +36,12 @@ public class UserRest {
         return ResponseEntity.ok(response);
     }
     
-    //TODO: Has to be modified to be register method ? ? ?
-    @PostMapping
-    public ResponseEntity<AddUserResponse> addUser(@Valid @RequestBody AddUserRequest request) {
-        AddUserResponse response = userService.addUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+    //TODO: Da modificare in registrazione utente
+    // @PostMapping
+    // public ResponseEntity<AddUserResponse> addUser(@Valid @RequestBody AddUserRequest request) {
+    //     AddUserResponse response = userService.addUser(request);
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    // }
 
     @PutMapping("/{id}")
     public ResponseEntity editUser(@PathVariable Long id, @Valid @RequestBody EditUserRequest request) {

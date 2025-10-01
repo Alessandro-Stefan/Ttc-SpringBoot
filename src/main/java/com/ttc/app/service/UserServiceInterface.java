@@ -5,7 +5,7 @@ import com.ttc.app.dto.user.*;
 public interface UserServiceInterface {
 
     GetUserResponse getUserById(Long id);
-    AddUserResponse addUser(AddUserRequest request);
+    // AddUserResponse addUser(AddUserRequest request);
     void editUser(Long id, EditUserRequest request);
     void deleteUser(Long id);
 }
