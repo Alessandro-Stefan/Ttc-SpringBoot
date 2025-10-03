@@ -1,0 +1,19 @@
+security:
+    endpoints:
+        publicEndpoints:
+            - path: /api/v1/users
+              method: POST
+            - path: /api/v1/users/login
+              method: POST
+        adminEndpoints: 
+            - path: /api/v1/users/**
+              methods: [GET, POST, PUT, DELETE]
+            - path: /api/v1/tasks/**
+              methods: [GET, POST, PUT, DELETE]
+            - path: /api/v1/tasks/category/**
+              methods: [GET, POST, PUT, DELETE]
+        userEndpoints: 
+            - path: /api/v1/tasks/**
+              methods: [GET, POST, PUT, DELETE]
+            - path: /api/v1/tasks/category/**
+              methods: [GET, POST, PUT, DELETE]
