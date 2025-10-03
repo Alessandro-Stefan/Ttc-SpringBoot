@@ -25,15 +25,15 @@ public class JwtUtil {
         this.securityProps = securityProps;
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String username) {
         Map<String,Object> claims = new HashMap<>();
-        return createToken(claims, email, securityProps.getJwtExpiration());
+        return createToken(claims, username, securityProps.getJwtExpiration());
     }
 
-    public String createToken(Map<String, Object> claims, String email, long expiration) {
+    public String createToken(Map<String, Object> claims, String username, long expiration) {
         return Jwts.builder()
                     .setClaims(claims)
-                    .setSubject(email)
+                    .setSubject(username)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + expiration))
                     .signWith(getSignKey(), SignatureAlgorithm.HS256)

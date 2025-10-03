@@ -40,19 +40,19 @@ public class SecurityConfig {
         JwtAuthFilter jwtFilter = new JwtAuthFilter(jwtUtil, userService, securityProps);
 
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf((csrf) -> csrf.disable())
             .authorizeHttpRequests(   
             auth -> {
                 securityProps.getPublicEndpoints().forEach(endpoint -> {
                     auth.requestMatchers(HttpMethod.valueOf(endpoint.getMethod()), endpoint.getPath()).permitAll();
                 });
+
+                securityProps.getUserEndpoints().forEach(endpoint -> {
+                    auth.requestMatchers(endpoint.getPath()).hasAnyRole("USER", "ADMIN");
+                });
                 
                 securityProps.getAdminEndpoints().forEach(endpoint -> {
                     auth.requestMatchers(endpoint.getPath()).hasRole("ADMIN");
-                });
-
-                securityProps.getUserEndpoints().forEach(endpoint -> {
-                    auth.requestMatchers(endpoint.getPath()).hasRole("USER");
                 });
 
                 auth.anyRequest().authenticated();

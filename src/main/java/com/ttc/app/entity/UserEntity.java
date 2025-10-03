@@ -35,7 +35,7 @@ public class UserEntity implements UserDetails {
     private Date updatedAt;
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    @ColumnDefault("USER")
+    @ColumnDefault("ROLE_USER")
     private Role role;
 
     public Long getId() {
