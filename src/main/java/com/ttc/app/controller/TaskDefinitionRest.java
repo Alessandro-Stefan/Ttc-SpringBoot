@@ -1,11 +1,9 @@
 package com.ttc.app.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ttc.app.dto.task.GetTaskResponse;
 import com.ttc.app.dto.taskDefinition.AddTaskDefinitionRequest;
 import com.ttc.app.dto.taskDefinition.AddTaskDefinitionResponse;
 import com.ttc.app.dto.taskDefinition.EditTaskDefinitionRequest;

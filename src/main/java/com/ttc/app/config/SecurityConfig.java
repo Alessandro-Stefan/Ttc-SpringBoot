@@ -41,8 +41,10 @@ public class SecurityConfig {
 
         http
             .csrf((csrf) -> csrf.disable())
-            .authorizeHttpRequests(   
+            .authorizeHttpRequests( 
             auth -> {
+                auth.requestMatchers("/error").permitAll();
+
                 securityProps.getPublicEndpoints().forEach(endpoint -> {
                     auth.requestMatchers(HttpMethod.valueOf(endpoint.getMethod()), endpoint.getPath()).permitAll();
                 });
