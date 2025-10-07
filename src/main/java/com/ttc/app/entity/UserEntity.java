@@ -1,6 +1,6 @@
 package com.ttc.app.entity;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,13 +30,12 @@ public class UserEntity implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    @ColumnDefault("ROLE_USER")
-    private Role role;
+    private Role role = Role.ROLE_USER;
 
     public Long getId() {
         return id;
@@ -83,16 +82,16 @@ public class UserEntity implements UserDetails {
     public void setEmail(String email) {
         this.email = email;
     }
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
     public Role getRole() {
