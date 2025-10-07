@@ -45,7 +45,9 @@ public class TaskDefinitionImpl implements TaskDefinitionInterface {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TaskDefinition not found with ID: " + id);
 
         entity.setCategory(request.category());
-        entity.setDescription(request.description() != null ? entity.getDescription() : " ");
+        if (request.description() != null && !request.description().isBlank()) 
+            entity.setDescription(request.description());
+                        
         taskDefinitionRepo.save(entity);
     }
 
