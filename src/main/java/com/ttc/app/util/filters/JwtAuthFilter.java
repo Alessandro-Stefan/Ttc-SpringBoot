@@ -1,7 +1,7 @@
-package com.ttc.app.security.filters;
+package com.ttc.app.util.filters;
 
 import com.ttc.app.security.beans.EndpointRule;
-import com.ttc.app.security.properties.SecurityProperties;
+import com.ttc.app.security.SecurityProperties;
 import com.ttc.app.service.UserServiceImpl;
 import com.ttc.app.util.JwtUtil;
 

@@ -9,7 +9,7 @@ import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.ttc.app.security.properties.SecurityProperties;
+import com.ttc.app.security.SecurityProperties;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package com.ttc.app.security.properties;
+package com.ttc.app.security;
 
 import com.ttc.app.security.beans.EndpointRule;
 import org.springframework.beans.factory.annotation.Value;
