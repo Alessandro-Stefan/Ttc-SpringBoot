@@ -8,7 +8,7 @@ import com.ttc.app.dto.taskDefinition.AddTaskDefinitionRequest;
 import com.ttc.app.dto.taskDefinition.AddTaskDefinitionResponse;
 import com.ttc.app.dto.taskDefinition.EditTaskDefinitionRequest;
 import com.ttc.app.dto.taskDefinition.GetTaskDefinitionResponse;
-import com.ttc.app.service.TaskDefinitionInterface;
+import com.ttc.app.service.TaskDefinitionServiceInterface;
 
 import jakarta.validation.Valid;
 
@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/api/v1/tasks/category")
 public class TaskDefinitionRest {
 
-    private final TaskDefinitionInterface taskDefinitionService;
+    private final TaskDefinitionServiceInterface taskDefinitionService;
 
-    public TaskDefinitionRest(TaskDefinitionInterface taskDefinitionService) {
+    public TaskDefinitionRest(TaskDefinitionServiceInterface taskDefinitionService) {
         this.taskDefinitionService = taskDefinitionService;
     }
 
@@ -41,7 +41,6 @@ public class TaskDefinitionRest {
         return ResponseEntity.ok(response);
     }
 
-    //TODO: [BUG] Se non metti un parametro nullable diventa null invece che non cambiare da come era prima.
     @PutMapping("/{id}")
     public ResponseEntity<Void> editTaskDefinition(@PathVariable Long id, @RequestBody @Valid EditTaskDefinitionRequest request) {
         taskDefinitionService.editTaskDefinition(id, request);

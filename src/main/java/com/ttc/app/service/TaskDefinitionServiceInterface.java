@@ -5,7 +5,7 @@ import com.ttc.app.dto.taskDefinition.AddTaskDefinitionResponse;
 import com.ttc.app.dto.taskDefinition.EditTaskDefinitionRequest;
 import com.ttc.app.dto.taskDefinition.GetTaskDefinitionResponse;
 
-public interface TaskDefinitionInterface {
+public interface TaskDefinitionServiceInterface {
     GetTaskDefinitionResponse getTaskDefinition(Long id);
     AddTaskDefinitionResponse addTaskDefinition(AddTaskDefinitionRequest request);
     void editTaskDefinition(Long id, EditTaskDefinitionRequest request);

@@ -17,9 +17,7 @@ public interface TaskMapper {
     @Mapping(target = "taskDefinition", expression = "java(toTaskDefinition(dto.definitionId()))")
     com.ttc.app.entity.TaskEntity toEntity(AddTaskRequest dto);
 
-    // Metodo helper per mappare solo l'ID in un oggetto TaskDefinition "stub"
     default TaskDefinitionEntity toTaskDefinition(Long id) {
-        if (id == null) return null;
         TaskDefinitionEntity td = new TaskDefinitionEntity();
         td.setId(id);
         return td;

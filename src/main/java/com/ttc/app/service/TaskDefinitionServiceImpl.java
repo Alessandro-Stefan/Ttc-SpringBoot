@@ -6,18 +6,22 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ttc.app.dto.taskDefinition.*;
 import com.ttc.app.entity.TaskDefinitionEntity;
+import com.ttc.app.entity.UserEntity;
 import com.ttc.app.mapper.TaskDefinitionMapper;
 import com.ttc.app.repository.TaskDefinitionRepo;
+import com.ttc.app.repository.UserRepo;
 
 @Service
-public class TaskDefinitionImpl implements TaskDefinitionInterface {
+public class TaskDefinitionServiceImpl implements TaskDefinitionServiceInterface {
 
     private final TaskDefinitionRepo taskDefinitionRepo;
     private final TaskDefinitionMapper taskDefinitionMapper;
+    private final UserRepo userRepo;
 
-    public TaskDefinitionImpl(TaskDefinitionRepo taskDefinitionRepo, TaskDefinitionMapper taskDefinitionMapper) {
+    public TaskDefinitionServiceImpl(TaskDefinitionRepo taskDefinitionRepo, TaskDefinitionMapper taskDefinitionMapper, UserRepo userRepo) {
         this.taskDefinitionRepo = taskDefinitionRepo;
         this.taskDefinitionMapper = taskDefinitionMapper;
+        this.userRepo = userRepo;
     }
 
     @Override
@@ -32,6 +36,9 @@ public class TaskDefinitionImpl implements TaskDefinitionInterface {
 
     @Override
     public AddTaskDefinitionResponse addTaskDefinition(AddTaskDefinitionRequest request) {
+        if (userRepo.getUserById(request.userId()) == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + request.userId());
+
         TaskDefinitionEntity entity = taskDefinitionMapper.toEntity(request);
         taskDefinitionRepo.save(entity);
         
