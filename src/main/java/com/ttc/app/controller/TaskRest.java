@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
@@ -30,19 +31,19 @@ public class TaskRest {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetTaskResponse> getTask(@PathVariable Long id) {
-        GetTaskResponse response = taskService.getTask(id);
+    public ResponseEntity<GetTaskResponse> getTask(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        GetTaskResponse response = taskService.getTask(id, token);
         return ResponseEntity.ok(response);
     }
     
     @PostMapping
-    public ResponseEntity<AddTaskResponse> addTask(@Valid @RequestBody AddTaskRequest request) {
-        AddTaskResponse response = taskService.addTask(request);
+    public ResponseEntity<AddTaskResponse> addTask(@RequestHeader("Authorization") String token, @Valid @RequestBody AddTaskRequest request) {
+        AddTaskResponse response = taskService.addTask(request, token);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> editTask(@PathVariable Long id, @Valid @RequestBody EditTaskRequest request) {
+    public ResponseEntity<Void> editTask(@PathVariable Long id, @Valid @RequestBody EditTaskRequest request, @RequestHeader("Authorization") String token) {
         taskService.editTask(id, request);
         return ResponseEntity.noContent().build();
     }

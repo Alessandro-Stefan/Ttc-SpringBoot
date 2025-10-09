@@ -14,13 +14,6 @@ public interface TaskDefinitionMapper {
     TaskDefinitionDto toDto (com.ttc.app.entity.TaskDefinitionEntity model);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", expression = "java(toUser(dto.userId()))")
+    @Mapping(target = "user", ignore = true)
     com.ttc.app.entity.TaskDefinitionEntity toEntity (AddTaskDefinitionRequest dto);
-
-    default UserEntity toUser(Long id) {
-        UserEntity user = new UserEntity();
-        user.setId(id);
-
-        return user;
-    }
 }
