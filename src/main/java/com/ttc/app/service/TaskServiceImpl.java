@@ -10,6 +10,7 @@ import com.ttc.app.dto.task.AddTaskResponse;
 import com.ttc.app.dto.task.EditTaskRequest;
 import com.ttc.app.dto.task.GetTaskResponse;
 import com.ttc.app.dto.task.TaskDto;
+import com.ttc.app.entity.TaskDefinitionEntity;
 import com.ttc.app.entity.TaskEntity;
 import com.ttc.app.mapper.TaskMapper;
 import com.ttc.app.repository.TaskDefinitionRepo;
@@ -21,28 +22,40 @@ public class TaskServiceImpl implements TaskServiceInterface {
     private final TaskRepo taskRepo;
     private final TaskMapper taskMapper;
     private final TaskDefinitionRepo taskDefinitionRepo;
+    private final AuthenticationService authService;
 
-    public TaskServiceImpl(TaskRepo taskRepo, TaskMapper taskMapper, TaskDefinitionRepo taskDefinitionRepo) {
+    public TaskServiceImpl(TaskRepo taskRepo, TaskMapper taskMapper, TaskDefinitionRepo taskDefinitionRepo, AuthenticationService authService) {
         this.taskRepo = taskRepo;
         this.taskMapper = taskMapper;
         this.taskDefinitionRepo = taskDefinitionRepo;
+        this.authService = authService;
     }
 
     @Override
-    public GetTaskResponse getTask(Long id) {
+    public GetTaskResponse getTask(Long id, String token) {
         TaskEntity entity = taskRepo.getTaskById(id);
-        if (entity == null){
+        if (entity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
-        }    
+        
+        //Da testare se recupero propriamente la categoria oppure ho bisogno di una chiamata al db
+        TaskDefinitionEntity categoryEntity = entity.getTaskDefinition();
+        if (!authService.checkUserAuthorization(token, categoryEntity.getUser().getId())) 
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch");
+
         TaskDto data = taskMapper.toDto(entity);
         return new GetTaskResponse(data);
     }
 
     @Override
-    public AddTaskResponse addTask(AddTaskRequest request) {
-        if (taskDefinitionRepo.getTaskDefinitionById(request.definitionId()) == null)
+    public AddTaskResponse addTask(AddTaskRequest request, String token) {
+        TaskDefinitionEntity categoryEntity = taskDefinitionRepo.getTaskDefinitionById(request.definitionId());
+
+        if (categoryEntity == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "TaskDefinition not found with id: " + request.definitionId());
-        
+
+        if(!authService.checkUserAuthorization(token, categoryEntity.getUser().getId())) 
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch");
+
         TaskEntity entity = taskMapper.toEntity(request);
         taskRepo.save(entity);
         return new AddTaskResponse(entity.getId());

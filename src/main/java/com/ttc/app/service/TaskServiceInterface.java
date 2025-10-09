@@ -7,8 +7,8 @@ import com.ttc.app.dto.task.GetTaskResponse;
 
 public interface TaskServiceInterface {
 
-    GetTaskResponse getTask(Long id);
-    AddTaskResponse addTask(AddTaskRequest request);
+    GetTaskResponse getTask(Long id, String token);
+    AddTaskResponse addTask(AddTaskRequest request, String token);
     void editTask(Long id, EditTaskRequest request);
     void deleteTask(Long id);
 }

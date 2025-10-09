@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
@@ -30,14 +31,14 @@ public class TaskDefinitionRest {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetTaskDefinitionResponse> getTaskDefinition(@PathVariable Long id) {
-        GetTaskDefinitionResponse response = taskDefinitionService.getTaskDefinition(id);
+    public ResponseEntity<GetTaskDefinitionResponse> getTaskDefinition(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        GetTaskDefinitionResponse response = taskDefinitionService.getTaskDefinition(id, token);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<AddTaskDefinitionResponse> addTaskDefinition(@RequestBody @Valid AddTaskDefinitionRequest request) {
-        AddTaskDefinitionResponse response = taskDefinitionService.addTaskDefinition(request);
+    public ResponseEntity<AddTaskDefinitionResponse> addTaskDefinition(@RequestHeader("Authorization") String token, @RequestBody @Valid AddTaskDefinitionRequest request) {
+        AddTaskDefinitionResponse response = taskDefinitionService.addTaskDefinition(request, token);
         return ResponseEntity.ok(response);
     }
 
