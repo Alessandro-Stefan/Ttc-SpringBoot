@@ -28,7 +28,7 @@ public class TaskEntity {
     @Column(name = "priority", nullable = false)
     private Integer priority;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     public Long getId() {
