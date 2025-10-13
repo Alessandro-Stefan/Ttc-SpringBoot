@@ -1,7 +1,6 @@
 package com.ttc.app.service;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,6 +14,7 @@ import com.ttc.app.entity.TaskEntity;
 import com.ttc.app.mapper.TaskMapper;
 import com.ttc.app.repository.TaskDefinitionRepo;
 import com.ttc.app.repository.TaskRepo;
+
 
 @Service
 public class TaskServiceImpl implements TaskServiceInterface {
@@ -62,19 +62,18 @@ public class TaskServiceImpl implements TaskServiceInterface {
     }
 
     @Override
-    public void editTask(Long id, EditTaskRequest request) {
+    public void editTask(Long id, EditTaskRequest request, String token) {
         TaskEntity entity = taskRepo.getTaskById(id);
         if (entity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
 
-        entity.setDescription(request.description() == null ? " " : request.description());
-        //TODO: Da inserire una classe che contiene le constanti di varie cose, tra cui la defaultPriority
-        entity.setPriority(request.priority() == null ? 0 : request.priority());
+        entity.setDescription(request.description());
+        entity.setPriority(request.priority() != null ? request.priority() : 0);
         taskRepo.save(entity);
     }
 
     @Override
-    public void deleteTask(Long id) {
+    public void deleteTask(Long id, String token) {
         TaskEntity entity = taskRepo.getTaskById(id);
         if (entity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);

@@ -50,8 +50,19 @@ public class TaskDefinitionServiceImpl implements TaskDefinitionServiceInterface
         return new AddTaskDefinitionResponse(entity.getId());
     }
 
-    //TODO: Da aggiungere l'aggiunta di categorie default
+    @Override
+    public AddTaskDefinitionResponse addDefaultTaskDefinition(AddTaskDefinitionRequest request, String token) {
+        Long userId = authService.getUserIdFromToken(token);
 
+        if (!authService.checkAdminAuthorization(token)) 
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Role unauthorized.");
+        
+        TaskDefinitionEntity entity = taskDefinitionMapper.toEntity(request);
+        entity.setUser(userRepo.getUserById(userId));
+        taskDefinitionRepo.save(entity);
+        
+        return new AddTaskDefinitionResponse(entity.getId());
+    }
 
     @Override
     public void editTaskDefinition(Long id, EditTaskDefinitionRequest request) {

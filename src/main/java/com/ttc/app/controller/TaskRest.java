@@ -44,13 +44,13 @@ public class TaskRest {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> editTask(@PathVariable Long id, @Valid @RequestBody EditTaskRequest request, @RequestHeader("Authorization") String token) {
-        taskService.editTask(id, request);
+        taskService.editTask(id, request, token);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id);
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        taskService.deleteTask(id, token);
         return ResponseEntity.noContent().build();
     }
 }

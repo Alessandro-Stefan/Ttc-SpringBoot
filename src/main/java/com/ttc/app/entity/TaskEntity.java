@@ -19,7 +19,7 @@ public class TaskEntity {
     private Long id;                
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = true)
     private String description;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "definition_id", nullable = false)
