@@ -9,6 +9,6 @@ public interface TaskServiceInterface {
 
     GetTaskResponse getTask(Long id, String token);
     AddTaskResponse addTask(AddTaskRequest request, String token);
-    void editTask(Long id, EditTaskRequest request);
-    void deleteTask(Long id);
+    void editTask(Long id, EditTaskRequest request, String token);
+    void deleteTask(Long id, String token);
 }

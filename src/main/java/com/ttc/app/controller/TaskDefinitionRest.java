@@ -42,6 +42,13 @@ public class TaskDefinitionRest {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/default")
+    public ResponseEntity<AddTaskDefinitionResponse> addDefaultTaskDefinition(@RequestHeader("Authorization") String token, @RequestBody @Valid AddTaskDefinitionRequest request) {
+        AddTaskDefinitionResponse response = taskDefinitionService.addDefaultTaskDefinition(request, token);
+        return ResponseEntity.ok(response);
+    }
+    
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> editTaskDefinition(@PathVariable Long id, @RequestBody @Valid EditTaskDefinitionRequest request) {
         taskDefinitionService.editTaskDefinition(id, request);

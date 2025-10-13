@@ -57,5 +57,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return user.getId();
     }
 
+    @Override
+    public boolean checkAdminAuthorization(String jwtToken) {
+        String username = jwtUtil.extractUsername(jwtUtil.extractTokenValue(jwtToken));
+        UserEntity user = userRepo.findByUsername(username);
+
+        return user.getRole() == Role.ROLE_ADMIN;
+    }
     //TODO: TO implement login from OAuth2.0 ? ? ?
 }
