@@ -8,5 +8,6 @@ public record TaskDefinitionDto
     Long id,
     @NotNull
     String category,
-    String description
+    String description,
+    Long userId
 ) {}

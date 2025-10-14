@@ -1,8 +1,11 @@
 package com.ttc.app.mapper;
 
+import java.time.LocalDateTime;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.ttc.app.dto.task.AddTaskRequest;
 import com.ttc.app.dto.task.TaskDto;
 import com.ttc.app.entity.TaskDefinitionEntity;
 
@@ -10,16 +13,21 @@ import com.ttc.app.entity.TaskDefinitionEntity;
 public interface TaskMapper {
 
     @Mapping(target = "definitionId", source = "taskDefinition.id")
-    TaskDto toDto(com.ttc.app.entity.TaskEntity model);
+    TaskDto toDto(com.ttc.app.entity.TaskEntity entity);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "taskDefinition", expression = "java(toTaskDefinition(dto.definitionId()))")
-    com.ttc.app.entity.TaskEntity toEntity(TaskDto dto);
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(toDateNow())")
+    com.ttc.app.entity.TaskEntity toEntity(AddTaskRequest dto);
 
-    // Metodo helper per mappare solo l'ID in un oggetto TaskDefinition "stub"
     default TaskDefinitionEntity toTaskDefinition(Long id) {
-        if (id == null) return null;
         TaskDefinitionEntity td = new TaskDefinitionEntity();
         td.setId(id);
         return td;
+    }
+
+    default LocalDateTime toDateNow() {
+        return LocalDateTime.now();
     }
 }

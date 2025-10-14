@@ -1,5 +1,5 @@
 package com.ttc.app.dto.user;
 
-public record GetUserRespose(
+public record GetUserResponse(
     UserDto user
 ) {}
