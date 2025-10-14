@@ -50,14 +50,14 @@ public class TaskDefinitionRest {
     
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> editTaskDefinition(@PathVariable Long id, @RequestBody @Valid EditTaskDefinitionRequest request) {
-        taskDefinitionService.editTaskDefinition(id, request);
+    public ResponseEntity<Void> editTaskDefinition(@PathVariable Long id, @RequestBody EditTaskDefinitionRequest request, @RequestHeader("Authorization") String token) {
+        taskDefinitionService.editTaskDefinition(id, request, token);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTaskDefinition(@PathVariable Long id) {
-        taskDefinitionService.deleteTaskDefinition(id);
+    public ResponseEntity<Void> deleteTaskDefinition(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        taskDefinitionService.deleteTaskDefinition(id, token);
         return ResponseEntity.noContent().build();
     }
 }

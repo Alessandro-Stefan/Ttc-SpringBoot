@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.ttc.app.dto.user.LoginRequest;
 import com.ttc.app.dto.user.LoginResponse;
-import com.ttc.app.entity.Role;
 import com.ttc.app.entity.UserEntity;
 import com.ttc.app.repository.UserRepo;
 import com.ttc.app.util.JwtUtil;
+import com.ttc.app.util.constants.EntityConstants;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -43,8 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserEntity user = userRepo.findByUsername(username);
 
         if (user.getId() == resourceOwnerId) return true;
-        if (resourceOwnerId == 1) return true;
-        if (user.getRole() == Role.ROLE_ADMIN) return true;
+        if (resourceOwnerId == EntityConstants.DEFAULT_ENTITY.getValue()) return true;
+        if (user.getRole() == EntityConstants.ADMIN_ROLE.getValue()) return true;
 
         return false; 
     }
@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String username = jwtUtil.extractUsername(jwtUtil.extractTokenValue(jwtToken));
         UserEntity user = userRepo.findByUsername(username);
 
-        return user.getRole() == Role.ROLE_ADMIN;
+        return user.getRole() == EntityConstants.ADMIN_ROLE.getValue();
     }
     //TODO: TO implement login from OAuth2.0 ? ? ?
 }
