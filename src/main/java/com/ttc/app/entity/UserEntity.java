@@ -28,9 +28,9 @@ public class UserEntity implements UserDetails {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = true)
     private LocalDateTime createdAt;
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = true)
     private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

@@ -1,5 +1,7 @@
 package com.ttc.app.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,23 +67,31 @@ public class TaskDefinitionServiceImpl implements TaskDefinitionServiceInterface
     }
 
     @Override
-    public void editTaskDefinition(Long id, EditTaskDefinitionRequest request) {
+    public void editTaskDefinition(Long id, EditTaskDefinitionRequest request, String token) {
         TaskDefinitionEntity entity = taskDefinitionRepo.getTaskDefinitionById(id);
         if (entity == null) 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TaskDefinition not found with ID: " + id);
 
-        entity.setCategory(request.category());
-        if (request.description() != null && !request.description().isBlank()) 
-            entity.setDescription(request.description());
-                        
+        if (!authService.checkUserAuthorization(token, entity.getUser().getId()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch.");
+
+        if (request.category() != null && !request.category().isEmpty())
+            entity.setCategory(request.category());
+
+        entity.setDescription(request.description());
+        entity.setUpdatedAt(LocalDateTime.now());
+
         taskDefinitionRepo.save(entity);
     }
 
     @Override
-    public void deleteTaskDefinition(Long id) {
+    public void deleteTaskDefinition(Long id, String token) {
         TaskDefinitionEntity entity = taskDefinitionRepo.getTaskDefinitionById(id);
         if (entity == null) 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TaskDefinition not found with ID: " + id);
+
+        if (!authService.checkUserAuthorization(token, entity.getUser().getId()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch.");
 
         taskDefinitionRepo.delete(entity);
     }

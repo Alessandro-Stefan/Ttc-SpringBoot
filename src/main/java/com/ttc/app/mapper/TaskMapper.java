@@ -1,5 +1,7 @@
 package com.ttc.app.mapper;
 
+import java.time.LocalDateTime;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,11 +17,17 @@ public interface TaskMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "taskDefinition", expression = "java(toTaskDefinition(dto.definitionId()))")
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(toDateNow())")
     com.ttc.app.entity.TaskEntity toEntity(AddTaskRequest dto);
 
     default TaskDefinitionEntity toTaskDefinition(Long id) {
         TaskDefinitionEntity td = new TaskDefinitionEntity();
         td.setId(id);
         return td;
+    }
+
+    default LocalDateTime toDateNow() {
+        return LocalDateTime.now();
     }
 }

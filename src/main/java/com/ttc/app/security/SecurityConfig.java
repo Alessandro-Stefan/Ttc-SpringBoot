@@ -2,6 +2,7 @@ package com.ttc.app.security;
 
 import com.ttc.app.service.UserServiceImpl;
 import com.ttc.app.util.JwtUtil;
+import com.ttc.app.util.constants.EntityConstants;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,11 +51,12 @@ public class SecurityConfig {
                 });
 
                 securityProps.getUserEndpoints().forEach(endpoint -> {
-                    auth.requestMatchers(endpoint.getPath()).hasAnyRole("USER", "ADMIN");
+                    auth.requestMatchers(endpoint.getPath()).hasAnyAuthority(String.valueOf(EntityConstants.USER_ROLE.getValue()),
+                                                                        String.valueOf(EntityConstants.ADMIN_ROLE.getValue()));
                 });
                 
                 securityProps.getAdminEndpoints().forEach(endpoint -> {
-                    auth.requestMatchers(endpoint.getPath()).hasRole("ADMIN");
+                    auth.requestMatchers(endpoint.getPath()).hasAuthority(String.valueOf(EntityConstants.ADMIN_ROLE.getValue()));
                 });
 
                 auth.anyRequest().authenticated();

@@ -1,5 +1,9 @@
 package com.ttc.app.service;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,21 +18,26 @@ import com.ttc.app.entity.TaskEntity;
 import com.ttc.app.mapper.TaskMapper;
 import com.ttc.app.repository.TaskDefinitionRepo;
 import com.ttc.app.repository.TaskRepo;
+import com.ttc.app.repository.UserRepo;
+import com.ttc.app.util.constants.PriorityConstants;
 
 
 @Service
 public class TaskServiceImpl implements TaskServiceInterface {
+
+    private final UserRepo userRepo;
 
     private final TaskRepo taskRepo;
     private final TaskMapper taskMapper;
     private final TaskDefinitionRepo taskDefinitionRepo;
     private final AuthenticationService authService;
 
-    public TaskServiceImpl(TaskRepo taskRepo, TaskMapper taskMapper, TaskDefinitionRepo taskDefinitionRepo, AuthenticationService authService) {
+    public TaskServiceImpl(TaskRepo taskRepo, TaskMapper taskMapper, TaskDefinitionRepo taskDefinitionRepo, AuthenticationService authService, UserRepo userRepo) {
         this.taskRepo = taskRepo;
         this.taskMapper = taskMapper;
         this.taskDefinitionRepo = taskDefinitionRepo;
         this.authService = authService;
+        this.userRepo = userRepo;
     }
 
     @Override
@@ -38,8 +47,7 @@ public class TaskServiceImpl implements TaskServiceInterface {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
         
         //Da testare se recupero propriamente la categoria oppure ho bisogno di una chiamata al db
-        TaskDefinitionEntity categoryEntity = entity.getTaskDefinition();
-        if (!authService.checkUserAuthorization(token, categoryEntity.getUser().getId())) 
+        if (!authService.checkUserAuthorization(token, entity.getUser().getId())) 
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch");
 
         TaskDto data = taskMapper.toDto(entity);
@@ -51,12 +59,15 @@ public class TaskServiceImpl implements TaskServiceInterface {
         TaskDefinitionEntity categoryEntity = taskDefinitionRepo.getTaskDefinitionById(request.definitionId());
 
         if (categoryEntity == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "TaskDefinition not found with id: " + request.definitionId());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TaskDefinition not found with id: " + request.definitionId());
 
         if(!authService.checkUserAuthorization(token, categoryEntity.getUser().getId())) 
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch");
 
+        Long userId = authService.getUserIdFromToken(token);
         TaskEntity entity = taskMapper.toEntity(request);
+        entity.setUser(userRepo.getUserById(userId));
+
         taskRepo.save(entity);
         return new AddTaskResponse(entity.getId());
     }
@@ -67,8 +78,31 @@ public class TaskServiceImpl implements TaskServiceInterface {
         if (entity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
 
+        if (!authService.checkUserAuthorization(token, entity.getUser().getId()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch");
+            
         entity.setDescription(request.description());
-        entity.setPriority(request.priority() != null ? request.priority() : 0);
+        
+        if (request.priority() != null) {
+            List<PriorityConstants> validPriorities = Arrays.asList(PriorityConstants.values());
+            if (!validPriorities.contains(request.priority()))
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid priority value: " + request.priority());
+            
+            entity.setPriority(request.priority());
+        }
+
+        if (request.definitionId() != null) {
+            TaskDefinitionEntity categoryEntity = taskDefinitionRepo.getTaskDefinitionById(request.definitionId());
+            if (categoryEntity == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "TaskDefinition not found with id: " + request.definitionId());
+
+            if (!authService.checkUserAuthorization(token, categoryEntity.getUser().getId()))
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch");
+            
+            entity.setTaskDefinition(categoryEntity);
+        }
+
+        entity.setUpdatedAt(LocalDateTime.now());
         taskRepo.save(entity);
     }
 
@@ -77,6 +111,9 @@ public class TaskServiceImpl implements TaskServiceInterface {
         TaskEntity entity = taskRepo.getTaskById(id);
         if (entity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found with id: " + id);
+
+        if (!authService.checkUserAuthorization(token, entity.getUser().getId())) 
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "UserId and resourceOwnerId mismatch");
         
         taskRepo.delete(entity);
     }

@@ -9,6 +9,6 @@ public interface TaskDefinitionServiceInterface {
     GetTaskDefinitionResponse getTaskDefinition(Long id, String token);
     AddTaskDefinitionResponse addTaskDefinition(AddTaskDefinitionRequest request, String token);
     AddTaskDefinitionResponse addDefaultTaskDefinition(AddTaskDefinitionRequest request, String token);
-    void editTaskDefinition(Long id, EditTaskDefinitionRequest request);
-    void deleteTaskDefinition(Long id);
+    void editTaskDefinition(Long id, EditTaskDefinitionRequest request, String token);
+    void deleteTaskDefinition(Long id, String token);
 }

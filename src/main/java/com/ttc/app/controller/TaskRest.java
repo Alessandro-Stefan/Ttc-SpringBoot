@@ -43,7 +43,7 @@ public class TaskRest {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> editTask(@PathVariable Long id, @Valid @RequestBody EditTaskRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Void> editTask(@PathVariable Long id,  @RequestBody EditTaskRequest request, @RequestHeader("Authorization") String token) {
         taskService.editTask(id, request, token);
         return ResponseEntity.noContent().build();
     }
