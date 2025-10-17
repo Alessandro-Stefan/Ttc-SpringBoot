@@ -7,6 +7,8 @@ import com.ttc.app.dto.task.AddTaskRequest;
 import com.ttc.app.dto.task.AddTaskResponse;
 import com.ttc.app.dto.task.EditTaskRequest;
 import com.ttc.app.dto.task.GetTaskResponse;
+import com.ttc.app.dto.task.SearchTaskCriteria;
+import com.ttc.app.dto.task.SearchTaskResponse;
 import com.ttc.app.service.TaskServiceInterface;
 
 import jakarta.validation.Valid;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
 @RestController
 @RequestMapping("/api/v1/tasks")
 public class TaskRest {
@@ -31,8 +32,14 @@ public class TaskRest {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetTaskResponse> getTask(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<GetTaskResponse> getTask(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         GetTaskResponse response = taskService.getTask(id, token);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping()
+    public ResponseEntity<SearchTaskResponse> searchTasks(@RequestHeader("Authorization") String token, SearchTaskCriteria sCriteria) {
+        SearchTaskResponse response = taskService.searchTask(token, sCriteria);
         return ResponseEntity.ok(response);
     }
     
@@ -43,13 +50,13 @@ public class TaskRest {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> editTask(@PathVariable Long id,  @RequestBody EditTaskRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Void> editTask(@RequestHeader("Authorization") String token, @PathVariable Long id,  @RequestBody EditTaskRequest request) {
         taskService.editTask(id, request, token);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Void> deleteTask(@RequestHeader("Authorization") String token, @PathVariable Long id) {
         taskService.deleteTask(id, token);
         return ResponseEntity.noContent().build();
     }

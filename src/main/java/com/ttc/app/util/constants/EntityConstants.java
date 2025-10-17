@@ -1,7 +1,7 @@
 package com.ttc.app.util.constants;
 
 public enum EntityConstants {
-    DEFAULT_ENTITY (1),
+    DEFAULT_ENTITY (1L),
 
     ADMIN_ROLE ("ROLE_ADMIN"),
     USER_ROLE ("ROLE_USER");

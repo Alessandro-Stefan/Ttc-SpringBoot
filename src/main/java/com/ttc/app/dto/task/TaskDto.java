@@ -5,5 +5,8 @@ public record TaskDto(
     String title,
     String description,
     Long definitionId,
-    int priority
+    int priority,
+    String createdAt,
+    String updatedAt,
+    int status
 ) {}

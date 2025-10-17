@@ -3,7 +3,9 @@ package com.ttc.app.service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import org.hibernate.query.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +14,8 @@ import com.ttc.app.dto.task.AddTaskRequest;
 import com.ttc.app.dto.task.AddTaskResponse;
 import com.ttc.app.dto.task.EditTaskRequest;
 import com.ttc.app.dto.task.GetTaskResponse;
+import com.ttc.app.dto.task.SearchTaskCriteria;
+import com.ttc.app.dto.task.SearchTaskResponse;
 import com.ttc.app.dto.task.TaskDto;
 import com.ttc.app.entity.TaskDefinitionEntity;
 import com.ttc.app.entity.TaskEntity;
@@ -19,7 +23,8 @@ import com.ttc.app.mapper.TaskMapper;
 import com.ttc.app.repository.TaskDefinitionRepo;
 import com.ttc.app.repository.TaskRepo;
 import com.ttc.app.repository.UserRepo;
-import com.ttc.app.util.constants.PriorityConstants;
+import com.ttc.app.repository.Specification.TaskSpecification;
+import com.ttc.app.util.constants.TaskConstants;
 
 
 @Service
@@ -55,6 +60,16 @@ public class TaskServiceImpl implements TaskServiceInterface {
     }
 
     @Override
+    public SearchTaskResponse searchTask(String token, SearchTaskCriteria criteria) {
+        Long userId = authService.getUserIdFromToken(token);
+        criteria.setUserId(userId);
+
+        List<TaskEntity> entities = taskRepo.findAll(TaskSpecification.byCriteria(criteria));
+        List<TaskDto> data = taskMapper.toDtoList(entities);
+        return new SearchTaskResponse(data);
+    }
+
+    @Override
     public AddTaskResponse addTask(AddTaskRequest request, String token) {
         TaskDefinitionEntity categoryEntity = taskDefinitionRepo.getTaskDefinitionById(request.definitionId());
 
@@ -84,7 +99,12 @@ public class TaskServiceImpl implements TaskServiceInterface {
         entity.setDescription(request.description());
         
         if (request.priority() != null) {
-            List<PriorityConstants> validPriorities = Arrays.asList(PriorityConstants.values());
+            List<TaskConstants> validPriorities = Arrays.asList(TaskConstants.PRIORITY_VERY_LOW, 
+                                                                TaskConstants.PRIORITY_LOW,
+                                                                TaskConstants.PRIORITY_MEDIUM,
+                                                                TaskConstants.PRIORITY_HIGH,
+                                                                TaskConstants.PRIORITY_VERY_HIGH);
+
             if (!validPriorities.contains(request.priority()))
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid priority value: " + request.priority());
             
