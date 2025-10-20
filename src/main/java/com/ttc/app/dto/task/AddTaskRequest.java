@@ -9,5 +9,6 @@ public record AddTaskRequest(
     @NotNull
     Long definitionId,
     @NotNull
-    int priority
+    int priority,
+    int status
 ) {}

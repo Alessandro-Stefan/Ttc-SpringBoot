@@ -2,12 +2,15 @@ package com.ttc.app.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ttc.app.dto.taskDefinition.AddTaskDefinitionRequest;
 import com.ttc.app.dto.taskDefinition.AddTaskDefinitionResponse;
 import com.ttc.app.dto.taskDefinition.EditTaskDefinitionRequest;
 import com.ttc.app.dto.taskDefinition.GetTaskDefinitionResponse;
+import com.ttc.app.dto.taskDefinition.SearchTaskDefinitionCriteria;
+import com.ttc.app.dto.taskDefinition.SearchTaskDefinitionResponse;
 import com.ttc.app.service.TaskDefinitionServiceInterface;
 
 import jakarta.validation.Valid;
@@ -33,6 +36,12 @@ public class TaskDefinitionRest {
     @GetMapping("/{id}")
     public ResponseEntity<GetTaskDefinitionResponse> getTaskDefinition(@PathVariable Long id, @RequestHeader("Authorization") String token) {
         GetTaskDefinitionResponse response = taskDefinitionService.getTaskDefinition(id, token);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping()
+    public ResponseEntity<SearchTaskDefinitionResponse> searchTaskDefinition (@RequestHeader("Authorization") String token, SearchTaskDefinitionCriteria criteria) {
+        SearchTaskDefinitionResponse response = taskDefinitionService.searchTaskDefinition(token, criteria);
         return ResponseEntity.ok(response);
     }
 

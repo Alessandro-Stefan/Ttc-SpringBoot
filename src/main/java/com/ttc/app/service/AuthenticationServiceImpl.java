@@ -1,5 +1,6 @@
 package com.ttc.app.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,6 +49,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return false; 
     }
+    
+    @Override
+    public boolean checkAdminAuthorization(String jwtToken) {
+        String username = jwtUtil.extractUsername(jwtUtil.extractTokenValue(jwtToken));
+        UserEntity user = userRepo.findByUsername(username);
+        
+        return user.getRole().name() == EntityConstants.ADMIN_ROLE.getValue();
+    }
 
     @Override
     public Long getUserIdFromToken(String jwtToken) {
@@ -58,11 +67,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public boolean checkAdminAuthorization(String jwtToken) {
+    public String getUserRoleFromToken(String jwtToken) {
         String username = jwtUtil.extractUsername(jwtUtil.extractTokenValue(jwtToken));
         UserEntity user = userRepo.findByUsername(username);
-
-        return user.getRole() == EntityConstants.ADMIN_ROLE.getValue();
+        
+        return user.getRole().name();
     }
     //TODO: TO implement login from OAuth2.0 ? ? ?
 }

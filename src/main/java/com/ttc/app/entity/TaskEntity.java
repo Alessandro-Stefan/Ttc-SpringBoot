@@ -35,6 +35,8 @@ public class TaskEntity {
     private LocalDateTime createdAt;
     @Column(name = "updated_at", nullable = true)
     private LocalDateTime updatedAt;
+    @Column(name = "status", nullable = true)
+    private int status;
 
     public Long getId() {
         return id;
@@ -84,11 +86,16 @@ public class TaskEntity {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+    public int getStatus() {
+        return status;
+    }
+    public void setStatus(int status) {
+        this.status = status;
+    }
+    
     @Override
     public String toString() {
         return "Task [id=" + id + ", title=" + title + ", description=" + description + ", taskDefinition="
                 + taskDefinition + ", priority=" + priority + "]";
     }
-
-    
 }
