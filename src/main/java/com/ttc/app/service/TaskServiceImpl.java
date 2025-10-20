@@ -61,8 +61,10 @@ public class TaskServiceImpl implements TaskServiceInterface {
 
     @Override
     public SearchTaskResponse searchTask(String token, SearchTaskCriteria criteria) {
-        Long userId = authService.getUserIdFromToken(token);
-        criteria.setUserId(userId);
+        if (!authService.checkAdminAuthorization(token)) {
+            Long userId = authService.getUserIdFromToken(token);
+            criteria.setUserId(userId);
+        }
 
         List<TaskEntity> entities = taskRepo.findAll(TaskSpecification.byCriteria(criteria));
         List<TaskDto> data = taskMapper.toDtoList(entities);

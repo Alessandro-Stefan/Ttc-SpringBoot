@@ -1,6 +1,7 @@
 package com.ttc.app.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import com.ttc.app.dto.user.*;
 import com.ttc.app.entity.UserEntity;
 import com.ttc.app.mapper.UserMapper;
 import com.ttc.app.repository.UserRepo;
+import com.ttc.app.repository.Specification.UserSpecification;
 
 @Service
 public class UserServiceImpl implements UserServiceInterface, UserDetailsService {
@@ -37,6 +39,16 @@ public class UserServiceImpl implements UserServiceInterface, UserDetailsService
         UserDto userDto = userMapper.toDto(userEntity);
         GetUserResponse response = new GetUserResponse(userDto);
         return response;
+    }
+
+    @Override
+    public SearchUserResponse searchUsers(String token, SearchUserCriteria criteria) {
+        List<UserEntity> entities = criteria != null ?
+                                                    userRepo.findAll(UserSpecification.byCriteria(criteria)) :
+                                                    userRepo.findAll();
+        List<UserDto> data = userMapper.toDtos(entities);
+
+        return new SearchUserResponse(data);
     }
 
     @Override

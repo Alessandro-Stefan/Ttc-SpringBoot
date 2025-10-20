@@ -7,8 +7,10 @@ public class SearchTaskCriteria {
     String title;
     Long definitionId;
     Integer priority;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    LocalDateTime createdAfter;
+    LocalDateTime createdBefore;
+    LocalDateTime updatedAfter;
+    LocalDateTime updatedBefore;
     Integer status;
 
     public Long getUserId() {
@@ -35,22 +37,35 @@ public class SearchTaskCriteria {
     public void setPriority(Integer priority) {
         this.priority = priority;
     }
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
     public Integer getStatus() {
         return status;
     }
     public void setStatus(Integer status) {
         this.status = status;
     }
+	public LocalDateTime getCreatedAfter() {
+		return createdAfter;
+	}
+	public void setCreatedAfter(LocalDateTime createdAfter) {
+		this.createdAfter = createdAfter;
+	}
+	public LocalDateTime getCreatedBefore() {
+		return createdBefore;
+	}
+	public void setCreatedBefore(LocalDateTime createdBefore) {
+		this.createdBefore = createdBefore;
+	}
+	public LocalDateTime getUpdatedAfter() {
+		return updatedAfter;
+	}
+	public void setUpdatedAfter(LocalDateTime updatedAfter) {
+		this.updatedAfter = updatedAfter;
+	}
+	public LocalDateTime getUpdatedBefore() {
+		return updatedBefore;
+	}
+	public void setUpdatedBefore(LocalDateTime updatedBefore) {
+		this.updatedBefore = updatedBefore;
+	}
+    
 }
